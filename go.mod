@@ -3,6 +3,7 @@ module terraform-provider-gotify
 go 1.21
 
 require (
+	github.com/go-openapi/runtime v0.17.2
 	github.com/hashicorp/terraform-plugin-docs v0.19.4
 	github.com/hashicorp/terraform-plugin-framework v1.9.0
 	github.com/hashicorp/terraform-plugin-go v0.23.0
@@ -20,7 +21,6 @@ require (
 	github.com/go-openapi/jsonpointer v0.17.0 // indirect
 	github.com/go-openapi/jsonreference v0.17.0 // indirect
 	github.com/go-openapi/loads v0.17.0 // indirect
-	github.com/go-openapi/runtime v0.17.2 // indirect
 	github.com/go-openapi/spec v0.17.0 // indirect
 	github.com/go-openapi/strfmt v0.17.0 // indirect
 	github.com/go-openapi/swag v0.17.0 // indirect

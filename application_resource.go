@@ -63,12 +63,18 @@ func (r *ApplicationResource) Schema(ctx context.Context, req resource.SchemaReq
 }
 
 func (r *ApplicationResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+	if req.ProviderData == nil {
+		// IMPORTANT: This method is called MULTIPLE times. An initial call might not have configured the Provider yet, so we need
+		// to handle this gracefully. It will eventually be called with a configured provider.
+		return
+	}
+
 	client, ok := req.ProviderData.(*AuthedGotifyClient)
 
 	if !ok {
 		resp.Diagnostics.AddError(
 			"Unexpected Resource Configure Type",
-			fmt.Sprintf("Expected *http.Client, got: %T. Please report this issue to the provider developers.", req.ProviderData),
+			fmt.Sprintf("Expected *AuthedGotifyClient, got: %T. Please report this issue to the provider developers.", req.ProviderData),
 		)
 
 		return

@@ -36,14 +36,15 @@ func (p *GotifyProvider) Metadata(_ context.Context, _ provider.MetadataRequest,
 func (p *GotifyProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			// All optional, ENV variables are also supported!
 			"endpoint": schema.StringAttribute{
-				Optional: false,
+				Optional: true,
 			},
 			"username": schema.StringAttribute{
-				Optional: false,
+				Optional: true,
 			},
 			"password": schema.StringAttribute{
-				Optional:  false,
+				Optional:  true,
 				Sensitive: true,
 			},
 		},

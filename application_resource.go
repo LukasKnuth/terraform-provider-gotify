@@ -49,7 +49,7 @@ func (r *ApplicationResource) Schema(ctx context.Context, req resource.SchemaReq
 				},
 			},
 			"name": schema.StringAttribute{
-				Optional: false,
+				Required: true,
 			},
 			"description": schema.StringAttribute{
 				Optional: true,

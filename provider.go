@@ -113,7 +113,9 @@ func (p *GotifyProvider) Configure(ctx context.Context, req provider.ConfigureRe
 
 // All Resources this provider offers
 func (p *GotifyProvider) Resources(ctx context.Context) []func() resource.Resource {
-	return []func() resource.Resource{}
+	return []func() resource.Resource{
+		NewApplicationResource,
+	}
 }
 
 // All DataSources (read) this provider offers

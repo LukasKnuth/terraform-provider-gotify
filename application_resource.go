@@ -28,11 +28,11 @@ func NewApplicationResource() resource.Resource {
 }
 
 type ApplicationResourceModel struct {
-	name        types.String `tfsdk:"name"`
-	description types.String `tfsdk:"description"`
+	Name        types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
 	// Read-only after apply
-	id    types.Int64  `tfsdk:"id"`
-	token types.String `tfsdk:"token"`
+	Id    types.Int64  `tfsdk:"id"`
+	Token types.String `tfsdk:"token"`
 }
 
 func (r *ApplicationResource) Metadata(ctx context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
@@ -95,8 +95,8 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 	// Send the request
 	params := application.NewCreateAppParams()
 	params.Body = &models.Application{
-		Name:        data.name.ValueString(),
-		Description: data.description.ValueString(),
+		Name:        data.Name.ValueString(),
+		Description: data.Description.ValueString(),
 	}
 	app, err := r.client.client.Application.CreateApp(params, r.client.auth)
 	if err != nil {
@@ -105,8 +105,8 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 	}
 
 	// Update model with computed information
-	data.id = types.Int64Value(int64(app.Payload.ID))
-	data.token = types.StringValue(app.Payload.Token)
+	data.Id = types.Int64Value(int64(app.Payload.ID))
+	data.Token = types.StringValue(app.Payload.Token)
 
 	// Write new data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -132,16 +132,16 @@ func (r *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 	// Find this application and it's data
 	var found *models.Application
 	for _, app := range app_list.Payload {
-		if app.ID == uint(state.id.ValueInt64()) {
+		if app.ID == uint(state.Id.ValueInt64()) {
 			found = app
 			break
 		}
 	}
 	if found != nil {
 		// Update information on state
-		state.name = types.StringValue(found.Name)
-		state.description = types.StringValue(found.Description)
-		state.token = types.StringValue(found.Token)
+		state.Name = types.StringValue(found.Name)
+		state.Description = types.StringValue(found.Description)
+		state.Token = types.StringValue(found.Token)
 
 		// Write new information to tf-state
 		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)
@@ -163,10 +163,10 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 
 	// Create API request
 	params := application.NewUpdateApplicationParams()
-	params.ID = data.id.ValueInt64()
+	params.ID = data.Id.ValueInt64()
 	params.Body = &models.Application{
-		Name:        data.name.ValueString(),
-		Description: data.description.ValueString(),
+		Name:        data.Name.ValueString(),
+		Description: data.Description.ValueString(),
 	}
 	app, err := r.client.client.Application.UpdateApplication(params, r.client.auth)
 	if err != nil {
@@ -175,9 +175,9 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 	}
 
 	// Update model with updated information
-	data.name = types.StringValue(app.Payload.Name)
-	data.description = types.StringValue(app.Payload.Description)
-	data.token = types.StringValue(app.Payload.Token)
+	data.Name = types.StringValue(app.Payload.Name)
+	data.Description = types.StringValue(app.Payload.Description)
+	data.Token = types.StringValue(app.Payload.Token)
 
 	// Write new data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
@@ -194,7 +194,7 @@ func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteReq
 
 	// Send DELETE request
 	params := application.NewDeleteAppParams()
-	params.ID = state.id.ValueInt64()
+	params.ID = state.Id.ValueInt64()
 	_, err := r.client.client.Application.DeleteApp(params, r.client.auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())

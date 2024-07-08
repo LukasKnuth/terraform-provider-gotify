@@ -172,4 +172,20 @@ func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateReq
 }
 
 func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
+	var state ApplicationResourceModel
+
+	// Read data from state
+	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Send DELETE request
+	params := application.NewDeleteAppParams()
+	params.ID = state.id.ValueInt64()
+	_, err := r.client.client.Application.DeleteApp(params, r.client.auth)
+	if err != nil {
+		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
+		return
+	}
 }

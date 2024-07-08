@@ -13,6 +13,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+// Ensure provider satisfies interfaces (will error compilition here)
+var _ provider.Provider = &GotifyProvider{}
+
 type GotifyProvider struct {
 	version string
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/gotify/go-api-client/v2/models"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -34,14 +36,17 @@ func (r *ApplicationResource) Metadata(ctx context.Context, req resource.Metadat
 func (r *ApplicationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			"id": schema.Int64Attribute{
+				Computed: true,
+				PlanModifiers: []planmodifier.Int64{
+					int64planmodifier.UseStateForUnknown(),
+				},
+			},
 			"name": schema.StringAttribute{
 				Optional: false,
 			},
 			"description": schema.StringAttribute{
 				Optional: true,
-			},
-			"id": schema.Int64Attribute{
-				Computed: true,
 			},
 			"token": schema.StringAttribute{
 				Computed:  true,
@@ -69,7 +74,7 @@ func (r *ApplicationResource) Configure(ctx context.Context, req resource.Config
 func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var data ApplicationResourceModel
 
-	// Read Plan data first
+	// Read planned initial values from the Terraform Plan
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
 	if resp.Diagnostics.HasError() {
 		return
@@ -136,6 +141,34 @@ func (r *ApplicationResource) Read(ctx context.Context, req resource.ReadRequest
 }
 
 func (r *ApplicationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
+	var data ApplicationResourceModel
+
+	// Read planned changes from the Terraform Plan
+	resp.Diagnostics.Append(req.Plan.Get(ctx, &data)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+
+	// Create API request
+	params := application.NewUpdateApplicationParams()
+	params.ID = data.id.ValueInt64()
+	params.Body = &models.Application{
+		Name:        data.name.ValueString(),
+		Description: data.description.ValueString(),
+	}
+	app, err := r.client.client.Application.UpdateApplication(params, r.client.auth)
+	if err != nil {
+		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
+		return
+	}
+
+	// Update model with updated information
+	data.name = types.StringValue(app.Payload.Name)
+	data.description = types.StringValue(app.Payload.Description)
+	data.token = types.StringValue(app.Payload.Token)
+
+	// Write new data into Terraform state
+	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)
 }
 
 func (r *ApplicationResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {

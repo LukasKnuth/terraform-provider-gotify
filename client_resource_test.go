@@ -19,9 +19,9 @@ resource "gotify_client" "test" {
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("gotify_application.test", "name", "Testing"),
-					resource.TestCheckResourceAttrSet("gotify_application.test", "id"),
-					resource.TestCheckResourceAttrSet("gotify_application.test", "token"),
+					resource.TestCheckResourceAttr("gotify_client.test", "name", "Testing"),
+					resource.TestCheckResourceAttrSet("gotify_client.test", "id"),
+					resource.TestCheckResourceAttrSet("gotify_client.test", "token"),
 				),
 			},
 			// Test Update() and Read()
@@ -32,7 +32,7 @@ resource "gotify_client" "test" {
 }
 `,
 				Check: resource.ComposeAggregateTestCheckFunc(
-					resource.TestCheckResourceAttr("gotify_application.test", "name", "Changed"),
+					resource.TestCheckResourceAttr("gotify_client.test", "name", "Changed"),
 				),
 			},
 		},

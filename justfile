@@ -2,6 +2,9 @@ set ignore-comments := true
 
 tf_executable := "~/.asdf/installs/terraform/1.8.5/bin/terraform"
 
+build:
+  go build
+
 test:
   # NOTE: `TF_ACC=1` enables acceptence test - This also requires the `-v` parameter
   # https://pkg.go.dev/github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource#Test
@@ -16,4 +19,3 @@ apply:
 
 state:
   {{tf_executable}} state list
-  {{tf_executable}} state show gotify_application.test

@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	// Ensure implementation satisfies expected interfaces - compilition fails here otherwise
+	// Ensure implementation satisfies expected interfaces - compilition fails here otherwise.
 	_ resource.Resource              = &ApplicationResource{}
 	_ resource.ResourceWithConfigure = &ApplicationResource{}
 )

@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	// NOTE: Endpoint is set by the ENV variable in docker-compose
+	// NOTE: Endpoint is set by the ENV variable in docker-compose.
 	providerConfig = `
 provider "gotify" {
  username = "admin"
@@ -19,7 +19,7 @@ provider "gotify" {
 )
 
 var (
-	// Factory to instanciate a test version of the provider
+	// Factory to instantiate a test version of the provider.
 	testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServer, error){
 		"gotify": providerserver.NewProtocol6WithError(NewProvider("test")()),
 	}

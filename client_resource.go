@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	// Ensure implementation satisfies expected interfaces - compilition fails here otherwise
+	// Ensure implementation satisfies expected interfaces - compilition fails here otherwise.
 	_ resource.Resource              = &ApplicationResource{}
 	_ resource.ResourceWithConfigure = &ApplicationResource{}
 )
@@ -58,7 +58,7 @@ func (r *ClientResource) Schema(ctx context.Context, req resource.SchemaRequest,
 	}
 }
 
-func (r *ClientResource) Configure(ctx context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *ClientResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
 	if req.ProviderData == nil {
 		// IMPORTANT: This method is called MULTIPLE times. An initial call might not have configured the Provider yet, so we need
 		// to handle this gracefully. It will eventually be called with a configured provider.

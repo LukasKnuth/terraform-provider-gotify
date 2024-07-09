@@ -13,14 +13,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-// Ensure provider satisfies interfaces (will error compilition here)
+// Ensure provider satisfies interfaces (will error compilition here).
 var _ provider.Provider = &GotifyProvider{}
 
 type GotifyProvider struct {
 	version string
 }
 
-// Map Terraform HCL schema to Go types
+// Map Terraform HCL schema to Go types.
 type GotifyProviderModel struct {
 	Endpoint types.String `tfsdk:"endpoint"`
 	Username types.String `tfsdk:"username"`
@@ -32,7 +32,7 @@ func (p *GotifyProvider) Metadata(_ context.Context, _ provider.MetadataRequest,
 	resp.Version = p.version
 }
 
-// What can be configured through HCL for this provider
+// What can be configured through HCL for this provider.
 func (p *GotifyProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
@@ -51,7 +51,7 @@ func (p *GotifyProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 	}
 }
 
-// The actual code of taking HCL values and creating a provider instance from them
+// The actual code of taking HCL values and creating a provider instance from them.
 func (p *GotifyProvider) Configure(ctx context.Context, req provider.ConfigureRequest, resp *provider.ConfigureResponse) {
 	var model GotifyProviderModel
 
@@ -115,7 +115,7 @@ func (p *GotifyProvider) Configure(ctx context.Context, req provider.ConfigureRe
 	resp.ResourceData = client
 }
 
-// All Resources this provider offers
+// All Resources this provider offers.
 func (p *GotifyProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewApplicationResource,
@@ -123,17 +123,17 @@ func (p *GotifyProvider) Resources(ctx context.Context) []func() resource.Resour
 	}
 }
 
-// All DataSources (read) this provider offers
+// All DataSources (read) this provider offers.
 func (p *GotifyProvider) DataSources(ctx context.Context) []func() datasource.DataSource {
 	return []func() datasource.DataSource{}
 }
 
-// All custom functions this provider offers
+// All custom functions this provider offers.
 func (p *GotifyProvider) Functions(ctx context.Context) []func() function.Function {
 	return []func() function.Function{}
 }
 
-// Create new instance of this provider
+// Create new instance of this provider.
 func NewProvider(version string) func() provider.Provider {
 	return func() provider.Provider {
 		return &GotifyProvider{

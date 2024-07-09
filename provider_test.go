@@ -8,9 +8,9 @@ import (
 )
 
 const (
+	// NOTE: Endpoint is set by the ENV variable in docker-compose
 	providerConfig = `
 provider "gotify" {
- endpoint = "http://localhost:23100"
  username = "admin"
  password = "admin"
 }

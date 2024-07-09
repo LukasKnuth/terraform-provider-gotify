@@ -1,0 +1,11 @@
+services:
+  gotify:
+    image: "ghcr.io/gotify/server-arm64:2.5.0"
+
+  test:
+    build: "."
+    depends_on:
+      gotify:
+        condition: service_started
+    environment:
+      GOTIFY_ENDPOINT: "http://gotify"

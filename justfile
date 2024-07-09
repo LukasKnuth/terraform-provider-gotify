@@ -1,7 +1,7 @@
 build:
   go build
 
-lint
+lint:
   golangci-lint run --fix
 
 test:

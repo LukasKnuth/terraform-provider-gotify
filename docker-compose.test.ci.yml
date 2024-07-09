@@ -1,0 +1,5 @@
+services:
+  gotify:
+    # GitHub Actions runs AMD64 machines. This is the _specific_ image for that Arch.
+    # There is no general image with multiple Arch support...
+    image: "ghcr.io/gotify/server:latest"

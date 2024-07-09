@@ -107,6 +107,8 @@ func (r *ApplicationResource) Create(ctx context.Context, req resource.CreateReq
 	// Update model with computed information
 	data.Id = types.Int64Value(int64(app.Payload.ID))
 	data.Token = types.StringValue(app.Payload.Token)
+	data.Name = types.StringValue(app.Payload.Name)
+	data.Description = types.StringValue(app.Payload.Description)
 
 	// Write new data into Terraform state
 	resp.Diagnostics.Append(resp.State.Set(ctx, &data)...)

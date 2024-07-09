@@ -119,6 +119,7 @@ func (p *GotifyProvider) Configure(ctx context.Context, req provider.ConfigureRe
 func (p *GotifyProvider) Resources(ctx context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		NewApplicationResource,
+		NewClientResource,
 	}
 }
 

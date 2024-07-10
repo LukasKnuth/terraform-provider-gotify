@@ -40,19 +40,24 @@ func (r *ClientResource) Metadata(ctx context.Context, req resource.MetadataRequ
 
 func (r *ClientResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description:         "A Gotify client is used to fetch messages from the server to display them in a client application.",
+		MarkdownDescription: "After applying the client, use the `token` to fetch messages in your client.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Computed: true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+				Description: "Numerical identifier of this specific client.",
 			},
 			"name": schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "Name for the client. Will show up in the clients list UI.",
 			},
 			"token": schema.StringAttribute{
-				Computed:  true,
-				Sensitive: true,
+				Computed:    true,
+				Sensitive:   true,
+				Description: "The Token to both identify the reading client AND authenticate it against the server.",
 			},
 		},
 	}

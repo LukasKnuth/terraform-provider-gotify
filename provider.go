@@ -35,17 +35,22 @@ func (p *GotifyProvider) Metadata(_ context.Context, _ provider.MetadataRequest,
 // What can be configured through HCL for this provider.
 func (p *GotifyProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description:         "Allows interacting with a Gotify server to manage application/client credentials",
+		MarkdownDescription: "For each application that wants to publish messages to Gotify, you want a new `gotify_application`. Once created, the `token` is populated and can be used to publish messages.\n\nFor each client that wants to read messages from Gotify, you want a new `gotify_client`. Once created, the `token` is populated and can be used to fetch messages.",
 		Attributes: map[string]schema.Attribute{
 			// All optional, ENV variables are also supported!
 			"endpoint": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Endpoint with Protocol to send requests to.",
 			},
 			"username": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "The Username to authenticate against the server. Gotify has a default \"admin\" user",
 			},
 			"password": schema.StringAttribute{
-				Optional:  true,
-				Sensitive: true,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "The Password to authenticate against the server. Gotify's default \"admin\" user has \"admin\" as their password.",
 			},
 		},
 	}

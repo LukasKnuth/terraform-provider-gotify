@@ -41,22 +41,28 @@ func (r *ApplicationResource) Metadata(ctx context.Context, req resource.Metadat
 
 func (r *ApplicationResource) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = schema.Schema{
+		Description:         "An application is used to publish messages to Gotify from a specific App. Each app receives it's own channel where all its messages end up in.",
+		MarkdownDescription: "After applying the resource, use the `token` to send messages from your application.",
 		Attributes: map[string]schema.Attribute{
 			"id": schema.Int64Attribute{
 				Computed: true,
 				PlanModifiers: []planmodifier.Int64{
 					int64planmodifier.UseStateForUnknown(),
 				},
+				Description: "Numeric identifier of this specific Application.",
 			},
 			"name": schema.StringAttribute{
-				Required: true,
+				Required:    true,
+				Description: "Name of the application sending messages. This is also the message channel name in the UI.",
 			},
 			"description": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "Description of the application sending messages. Will show up in the Apps list.",
 			},
 			"token": schema.StringAttribute{
-				Computed:  true,
-				Sensitive: true,
+				Computed:    true,
+				Sensitive:   true,
+				Description: "The Token to both identify the sending application AND authenticate it against the server.",
 			},
 		},
 	}

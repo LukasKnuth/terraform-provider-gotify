@@ -37,5 +37,3 @@ website/vendor
 # Build output
 terraform-provider-gotify
 
-# Docs output
-docs/

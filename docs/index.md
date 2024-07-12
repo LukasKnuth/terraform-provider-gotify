@@ -16,10 +16,17 @@ For each client that wants to read messages from Gotify, you want a new `gotify_
 ## Example Usage
 
 ```terraform
+# Required configuration
 provider "gotify" {
   endpoint = "http://my.gotify.local" # or GOTIFY_ENDPOINT
   username = "admin"                  # or GOTIFY_USERNAME
   password = "admin"                  # or GOTIFY_PASSWORD
+}
+
+# When Gotify is behind a reverse proxy and DNS isn't setup yet
+provider "gotify" {
+  endpoint    = "http://192.168.1.4" # public, static IP of deployment
+  host_header = "my.gotify.local"    # Host header expected by reverse proxy
 }
 ```
 
@@ -29,5 +36,6 @@ provider "gotify" {
 ### Optional
 
 - `endpoint` (String) Endpoint with Protocol to send requests to.
+- `host_header` (String) This is useful when Gotify is deployed behind a reverse proxy and this provider is used in your infrastructure setup where DNS might not be available yet. You can then set the endpoint to an IP address and the Host to what your reverse Proxy expects.
 - `password` (String, Sensitive) The Password to authenticate against the server. Gotify's default "admin" user has "admin" as their password.
 - `username` (String) The Username to authenticate against the server. Gotify has a default "admin" user

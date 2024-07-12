@@ -22,9 +22,10 @@ type GotifyProvider struct {
 
 // Map Terraform HCL schema to Go types.
 type GotifyProviderModel struct {
-	Endpoint types.String `tfsdk:"endpoint"`
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
+	Endpoint   types.String `tfsdk:"endpoint"`
+	HostHeader types.String `tfsdk:"host_header"`
+	Username   types.String `tfsdk:"username"`
+	Password   types.String `tfsdk:"password"`
 }
 
 func (p *GotifyProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -51,6 +52,11 @@ func (p *GotifyProvider) Schema(_ context.Context, _ provider.SchemaRequest, res
 				Optional:    true,
 				Sensitive:   true,
 				Description: "The Password to authenticate against the server. Gotify's default \"admin\" user has \"admin\" as their password.",
+			},
+			"host_header": schema.StringAttribute{
+				Optional:            true,
+				Description:         "Allows overwriting the Host header in all HTTP requests made to the Gotify REST API.",
+				MarkdownDescription: "This is useful when Gotify is deployed behind a reverse proxy and this provider is used in your infrastructure setup where DNS might not be available yet. You can then set the endpoint to an IP address and the Host to what your reverse Proxy expects.",
 			},
 		},
 	}
@@ -107,7 +113,7 @@ func (p *GotifyProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	client, err := NewAuthedClient(endpoint, username, password)
+	client, err := NewAuthedClient(endpoint, username, password, model.HostHeader.ValueStringPointer())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Failed while constructing client", err.Error(),

@@ -12,7 +12,7 @@ import (
 
 const (
 	testHost = "my.coolapp.local"
-	// the httptest.NewServer always listens on this address
+	// the httptest.NewServer always listens on this address.
 	localHost = "127.0.0.1"
 )
 

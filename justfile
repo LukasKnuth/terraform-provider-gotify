@@ -19,10 +19,13 @@ test:
 
 check: build lint test docs
 
-plan:
+init:
+  echo "Not needed for dev! Instead, override in `~/.terraformrc` and just plan/apply!"
+
+plan: build
   terraform plan
 
-apply:
+apply: build
   terraform apply
 
 state:

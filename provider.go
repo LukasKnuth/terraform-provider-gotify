@@ -131,6 +131,7 @@ func (p *GotifyProvider) Resources(ctx context.Context) []func() resource.Resour
 	return []func() resource.Resource{
 		NewApplicationResource,
 		NewClientResource,
+		NewPluginResource,
 	}
 }
 

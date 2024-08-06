@@ -9,8 +9,6 @@ import (
 	"github.com/gotify/go-api-client/v2/models"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
@@ -33,7 +31,6 @@ type PluginResourceModel struct {
 	ModulePath types.String `tfsdk:"module_path"`
 	Enabled    types.Bool   `tfsdk:"enabled"`
 	// Read-only after apply
-	Id          types.Int64  `tfsdk:"id"`
 	Token       types.String `tfsdk:"token"`
 	WebhookPath types.String `tfsdk:"webhook_path"`
 }
@@ -47,14 +44,6 @@ func (r *PluginResource) Schema(ctx context.Context, req resource.SchemaRequest,
 		Description:         "Configures a plugin installed on the Gotify server.",
 		MarkdownDescription: "The plugin must already be on the server. It must be compatible as well, you can check this manually by navigating to \"Plugins\" in the Web interface.",
 		Attributes: map[string]schema.Attribute{
-			"id": schema.Int64Attribute{
-				// TODO Do we NEED this? ModulePath might be good enough...
-				Computed: true,
-				PlanModifiers: []planmodifier.Int64{
-					int64planmodifier.UseStateForUnknown(),
-				},
-				Description: "Numerical identifier of this specific plugin.",
-			},
 			"module_path": schema.StringAttribute{
 				Required:    true,
 				Description: "The unique identifier of this plugin, chosen by the author. Check \"Plugins\" in the Web interface to find this out manually.",
@@ -129,7 +118,6 @@ func (r *PluginResource) Create(ctx context.Context, req resource.CreateRequest,
 	}
 
 	// Store state info
-	data.Id = types.Int64Value(int64(found.ID))
 	data.Token = types.StringValue(found.Token)
 	data.WebhookPath = toWebhookPath(found.ID, found.Token)
 
@@ -193,7 +181,6 @@ func (r *PluginResource) Read(ctx context.Context, req resource.ReadRequest, res
 		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
 	} else if found != nil {
 		// Update information on state
-		state.Id = types.Int64Value(int64(found.ID)) // TODO does this make sense? Can/Should this ever change?
 		state.Token = types.StringValue(found.Token)
 		state.Enabled = types.BoolValue(found.Enabled)
 		state.Token = types.StringValue(found.Token)
@@ -217,17 +204,25 @@ func (r *PluginResource) Update(ctx context.Context, req resource.UpdateRequest,
 		return
 	}
 
+	found, err := r.findPlugin(plan.ModulePath.ValueString())
+	if err != nil {
+		resp.Diagnostics.AddError("Gotify API request failed", err.Error())
+		return
+	} else if found == nil {
+		resp.Diagnostics.AddError("Could not find plugin %s, is it installed?", plan.ModulePath.ValueString())
+		return
+	}
+
 	if !plan.Enabled.Equal(state.Enabled) {
-		err := r.applyPluginState(plan.Id.ValueInt64(), plan.Enabled.ValueBool())
+		err := r.applyPluginState(int64(found.ID), plan.Enabled.ValueBool())
 		if err != nil {
 			resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
 			return
 		}
 	}
 
-	// TODO need to set any "generated" values. Even though they haven't changed. Do a read request instead, just to be sure?
-	plan.WebhookPath = toWebhookPath(uint(state.Id.ValueInt64()), state.Token.ValueString())
-	plan.Token = state.Token
+	plan.Token = types.StringValue(found.Token)
+	plan.WebhookPath = toWebhookPath(found.ID, found.Token)
 
 	resp.Diagnostics.Append(resp.State.Set(ctx, &plan)...)
 }

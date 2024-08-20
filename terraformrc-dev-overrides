@@ -1,0 +1,9 @@
+provider_installation {
+	dev_overrides {
+		"registry.terraform.io/hashicorp/gotify" = "./out"
+	}
+
+	# Install all other providers normally. Leaving this out
+	# will make terraform ONLY use the `dev_overrides` block.
+	direct {}
+}

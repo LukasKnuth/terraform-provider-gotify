@@ -35,5 +35,5 @@ website/vendor
 *.winfile eol=crlf
 
 # Build output
-terraform-provider-gotify
+out/
 

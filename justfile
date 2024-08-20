@@ -1,5 +1,5 @@
 build:
-  go build
+  go build -o out/
 
 lint:
   golangci-lint run --fix

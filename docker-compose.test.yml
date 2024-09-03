@@ -2,7 +2,7 @@ services:
   gotify:
     # Use the specific ARM64 image to run locally on my M1 MacBook
     # There is no general image with multiple Arch support...
-    image: "ghcr.io/gotify/server-arm64:latest"
+    image: "ghcr.io/lukasknuth/gotify-slack-webhook-bundled:latest"
 
   test:
     build: "."

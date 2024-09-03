@@ -46,7 +46,5 @@ jobs:
       - uses: hoverkraft-tech/compose-action@v2.0.1
         name: Run with Gotify Server
         with:
-          compose-file: |
-            ./docker-compose.test.yml
-            ./docker-compose.test.ci.yml
+          compose-file: "./docker-compose.test.yml"
           up-flags: "--build --abort-on-container-exit"

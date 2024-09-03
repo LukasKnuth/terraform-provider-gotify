@@ -14,7 +14,7 @@ import (
 // Run "go generate" to format example terraform files and generate the docs for the registry/website
 
 //go:generate terraform fmt -recursive ./examples/
-//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --tf-version 1.8.5
+//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate --tf-version 1.9.3
 
 var (
 	// these will be set by the goreleaser configuration

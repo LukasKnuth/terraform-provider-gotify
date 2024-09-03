@@ -1,6 +1,6 @@
 provider_installation {
 	dev_overrides {
-		"registry.terraform.io/hashicorp/gotify" = "./out"
+		"registry.terraform.io/hashicorp/gotify" = "$MODULE_FULL_PATH"
 	}
 
 	# Install all other providers normally. Leaving this out

@@ -2,9 +2,30 @@
 
 This Provider allows you to manage your Gotify server as part of your infrastructure.
 
-It allows creating Applications (to publish messages) and Clients (to fetch messages). The generated tokens can then be used to set up other infrastructure that wants to publish to Gotify/read from it.
+```terraform
+provider "gotify" {
+  endpoint = "http://my.gotify.local"
+}
 
-## Using the provider
+# Create a Gotify app...
+resource "gotify_application" "todo_list" {
+  name        = "ToDos"
+  description = "Notifies when new ToDos are added by others"
+}
+
+# ...then use the token to send messages
+resource "k8s_deployment" "todo" {
+  container {
+    name = "todos"
+    image = "mytools/mytodo"
+
+    env {
+      name = "GOTIFY_TOKEN"
+      value = gotify_application.todo_list.token
+    }
+  }
+}
+```
 
 Hop over to the [Terraform Registry](https://registry.terraform.io/providers/LukasKnuth/gotify/) to get instructions and documentation for the provider.
 

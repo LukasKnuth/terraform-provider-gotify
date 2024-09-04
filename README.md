@@ -16,11 +16,11 @@ resource "gotify_application" "todo_list" {
 # ...then use the token to send messages
 resource "k8s_deployment" "todo" {
   container {
-    name = "todos"
+    name  = "todos"
     image = "mytools/mytodo"
 
     env {
-      name = "GOTIFY_TOKEN"
+      name  = "GOTIFY_TOKEN"
       value = gotify_application.todo_list.token
     }
   }

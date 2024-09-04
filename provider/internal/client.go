@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"net/http"
@@ -11,8 +11,8 @@ import (
 )
 
 type AuthedGotifyClient struct {
-	client *client.GotifyREST
-	auth   runtime.ClientAuthInfoWriter
+	Client *client.GotifyREST
+	Auth   runtime.ClientAuthInfoWriter
 }
 
 type OverwriteHostTransport struct {
@@ -43,5 +43,5 @@ func NewAuthedClient(endpoint string, username string, password string, host *st
 	client := gotify.NewClient(url, &http.Client{Transport: transport})
 	auth := auth.BasicAuth(username, password)
 
-	return &AuthedGotifyClient{client: client, auth: auth}, nil
+	return &AuthedGotifyClient{Client: client, Auth: auth}, nil
 }

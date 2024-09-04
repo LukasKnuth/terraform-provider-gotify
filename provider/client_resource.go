@@ -1,8 +1,9 @@
-package main
+package provider
 
 import (
 	"context"
 	"fmt"
+	"terraform-provider-gotify/provider/internal"
 
 	"github.com/gotify/go-api-client/v2/client/client"
 	"github.com/gotify/go-api-client/v2/models"
@@ -20,7 +21,7 @@ var (
 )
 
 type ClientResource struct {
-	client *AuthedGotifyClient
+	gotify *internal.AuthedGotifyClient
 }
 
 func NewClientResource() resource.Resource {
@@ -70,7 +71,7 @@ func (r *ClientResource) Configure(_ context.Context, req resource.ConfigureRequ
 		return
 	}
 
-	client, ok := req.ProviderData.(*AuthedGotifyClient)
+	client, ok := req.ProviderData.(*internal.AuthedGotifyClient)
 
 	if !ok {
 		resp.Diagnostics.AddError(
@@ -81,7 +82,7 @@ func (r *ClientResource) Configure(_ context.Context, req resource.ConfigureRequ
 		return
 	}
 
-	r.client = client
+	r.gotify = client
 }
 
 func (r *ClientResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -96,7 +97,7 @@ func (r *ClientResource) Create(ctx context.Context, req resource.CreateRequest,
 	params.Body = &models.Client{
 		Name: data.Name.ValueString(),
 	}
-	new_client, err := r.client.client.Client.CreateClient(params, r.client.auth)
+	new_client, err := r.gotify.Client.Client.CreateClient(params, r.gotify.Auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
 		return
@@ -118,7 +119,7 @@ func (r *ClientResource) Read(ctx context.Context, req resource.ReadRequest, res
 	}
 
 	params := client.NewGetClientsParams()
-	client_list, err := r.client.client.Client.GetClients(params, r.client.auth)
+	client_list, err := r.gotify.Client.Client.GetClients(params, r.gotify.Auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
 		return
@@ -159,7 +160,7 @@ func (r *ClientResource) Update(ctx context.Context, req resource.UpdateRequest,
 	params.Body = &models.Client{
 		Name: data.Name.ValueString(),
 	}
-	updated_client, err := r.client.client.Client.UpdateClient(params, r.client.auth)
+	updated_client, err := r.gotify.Client.Client.UpdateClient(params, r.gotify.Auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
 		return
@@ -181,7 +182,7 @@ func (r *ClientResource) Delete(ctx context.Context, req resource.DeleteRequest,
 
 	params := client.NewDeleteClientParams()
 	params.ID = state.Id.ValueInt64()
-	_, err := r.client.client.Client.DeleteClient(params, r.client.auth)
+	_, err := r.gotify.Client.Client.DeleteClient(params, r.gotify.Auth)
 	if err != nil {
 		resp.Diagnostics.AddError("Gotify API Request failed", err.Error())
 		return

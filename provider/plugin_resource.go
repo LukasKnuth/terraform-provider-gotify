@@ -1,8 +1,9 @@
-package main
+package provider
 
 import (
 	"context"
 	"fmt"
+	"terraform-provider-gotify/provider/internal"
 
 	"github.com/go-openapi/runtime"
 	"github.com/gotify/go-api-client/v2/client/plugin"
@@ -20,7 +21,7 @@ var (
 )
 
 type PluginResource struct {
-	client *AuthedGotifyClient
+	gotify *internal.AuthedGotifyClient
 }
 
 func NewPluginResource() resource.Resource {
@@ -76,7 +77,7 @@ func (r *PluginResource) Configure(_ context.Context, req resource.ConfigureRequ
 		return
 	}
 
-	client, ok := req.ProviderData.(*AuthedGotifyClient)
+	client, ok := req.ProviderData.(*internal.AuthedGotifyClient)
 
 	if !ok {
 		resp.Diagnostics.AddError(
@@ -87,7 +88,7 @@ func (r *PluginResource) Configure(_ context.Context, req resource.ConfigureRequ
 		return
 	}
 
-	r.client = client
+	r.gotify = client
 }
 
 func (r *PluginResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -129,11 +130,11 @@ func (r *PluginResource) applyPluginState(id int64, enable bool) error {
 	if enable {
 		params := plugin.NewEnablePluginParams()
 		params.ID = id
-		_, err = r.client.client.Plugin.EnablePlugin(params, r.client.auth)
+		_, err = r.gotify.Client.Plugin.EnablePlugin(params, r.gotify.Auth)
 	} else {
 		params := plugin.NewDisablePluginParams()
 		params.ID = id
-		_, err = r.client.client.Plugin.DisablePlugin(params, r.client.auth)
+		_, err = r.gotify.Client.Plugin.DisablePlugin(params, r.gotify.Auth)
 	}
 	if err == nil {
 		return nil
@@ -150,7 +151,7 @@ func (r *PluginResource) applyPluginState(id int64, enable bool) error {
 
 func (r *PluginResource) findPlugin(modulePath string) (*models.PluginConfExternal, error) {
 	params := plugin.NewGetPluginsParams()
-	plugins, err := r.client.client.Plugin.GetPlugins(params, r.client.auth)
+	plugins, err := r.gotify.Client.Plugin.GetPlugins(params, r.gotify.Auth)
 	if err != nil {
 		return nil, err
 	} else {

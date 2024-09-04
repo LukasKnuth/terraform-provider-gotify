@@ -1,4 +1,4 @@
-package main
+package internal
 
 import (
 	"fmt"
@@ -29,13 +29,13 @@ func TestClientHostOverwrite(t *testing.T) {
 	defer ts.Close()
 
 	host := testHost
-	client, err := NewAuthedClient(ts.URL, "test", "test", &host)
+	gotify, err := NewAuthedClient(ts.URL, "test", "test", &host)
 	if err != nil {
 		t.Fatalf("Could not construct client: %v", err.Error())
 	}
 
 	params := application.NewGetAppsParams()
-	_, err = client.client.Application.GetApps(params, client.auth)
+	_, err = gotify.Client.Application.GetApps(params, gotify.Auth)
 	if err != nil {
 		t.Fatalf("Error during test request: %v", err.Error())
 	}
@@ -53,13 +53,13 @@ func TestClientHostDefault(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	client, err := NewAuthedClient(ts.URL, "test", "test", nil)
+	gotify, err := NewAuthedClient(ts.URL, "test", "test", nil)
 	if err != nil {
 		t.Fatalf("Could not construct client: %v", err.Error())
 	}
 
 	params := application.NewGetAppsParams()
-	_, err = client.client.Application.GetApps(params, client.auth)
+	_, err = gotify.Client.Application.GetApps(params, gotify.Auth)
 	if err != nil {
 		t.Fatalf("Error during test request: %v", err.Error())
 	}

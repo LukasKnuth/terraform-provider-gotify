@@ -1,8 +1,9 @@
-package main
+package provider
 
 import (
 	"context"
 	"os"
+	"terraform-provider-gotify/provider/internal"
 
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/function"
@@ -113,7 +114,7 @@ func (p *GotifyProvider) Configure(ctx context.Context, req provider.ConfigureRe
 		return
 	}
 
-	client, err := NewAuthedClient(endpoint, username, password, model.HostHeader.ValueStringPointer())
+	client, err := internal.NewAuthedClient(endpoint, username, password, model.HostHeader.ValueStringPointer())
 	if err != nil {
 		resp.Diagnostics.AddError(
 			"Failed while constructing client", err.Error(),

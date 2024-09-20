@@ -43,7 +43,7 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
-      - uses: hoverkraft-tech/compose-action@v2.0.1
+      - uses: hoverkraft-tech/compose-action@v2.0.2
         name: Run with Gotify Server
         with:
           compose-file: "./docker-compose.test.yml"

@@ -136,9 +136,6 @@ func (r *ClientResource) Read(ctx context.Context, req resource.ReadRequest, res
 	if found != nil {
 		// Update information on state
 		state.Name = types.StringValue(found.Name)
-		if found.Token != "" {
-			state.Token = types.StringValue(found.Token)
-		}
 
 		// Write new information to tf-state
 		resp.Diagnostics.Append(resp.State.Set(ctx, &state)...)

@@ -24,6 +24,13 @@ resource "gotify_client" "test" {
 					resource.TestCheckResourceAttrSet("gotify_client.test", "token"),
 				),
 			},
+			// Test Read() leaves the Create token alone
+			{
+				RefreshState: true,
+				Check: resource.ComposeAggregateTestCheckFunc(
+					resource.TestCheckResourceAttrSet("gotify_client.test", "token"),
+				),
+			},
 			// Test Update() and Read()
 			{
 				Config: providerConfig + `
